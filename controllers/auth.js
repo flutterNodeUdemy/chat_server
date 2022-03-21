@@ -28,7 +28,7 @@ const crearUsuario = async (req, res) => {
 
         res.json({
             ok: true,
-            msg: usuario,
+            usuario,
             token
         })
 
@@ -46,14 +46,14 @@ const login = async (req, res) => {
     try {
 
         const { email, password } = req.body;
-        const usuarioDB = await Usuario.findOne({ email });
-        if (!usuarioDB) {
+        const usuario = await Usuario.findOne({ email });
+        if (!usuario) {
             return res.status(404).json({
                 ok: false,
                 msg: 'login incorrecto'
             });
         }
-        const validPassword = bcrypt.compareSync(password, usuarioDB.password);
+        const validPassword = bcrypt.compareSync(password, usuario.password);
 
         if (!validPassword) {
             return res.status(404).json({
@@ -61,12 +61,12 @@ const login = async (req, res) => {
                 msg: 'login incorrecto'
             });
         }
-        const token = await generarJWT(usuarioDB.id);
+        const token = await generarJWT(usuario.id);
 
 
         res.json({
             ok: true,
-            usuario: usuarioDB,
+            usuario,
             token
         })
 
